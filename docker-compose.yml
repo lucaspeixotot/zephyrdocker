@@ -1,0 +1,9 @@
+version: '3'
+services:
+  zephyrApp:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: zephyrApp
+    volumes:
+      - .:/home/appuser/workdir
