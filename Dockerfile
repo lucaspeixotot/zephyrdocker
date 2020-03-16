@@ -5,28 +5,38 @@ FROM ubuntu:18.04
 ARG ZEPHYR_BRANCH=tc_extensor
 ARG ZEPHYR_URL=https://github.com/edgebr/zephyr
 ARG SDK_VERSION=0.10.0
-ARG MY_UID
-ARG MY_GID
 ARG CMAKE_VERSION=3.16.2
+ARG USERNAME=lucas
 
 # Setting env variables
 ENV ZEPHYR_BASE=/home/appuser/zephyrproject/zephyr
 ENV APP=/home/appuser/workdir
 ENV DEBIAN_FRONTEND noninteractive
+ENV user=${USERNAME}
+ENV ZEPHYR_TOOLCHAIN_VARIANT=zephyr
+ENV ZEPHYR_SDK_INSTALL_DIR=/home/${user}/toolchains/zephyr-sdk-${SDK_VERSION} 
 
 # Creating directories
 RUN mkdir -p ${ZEPHYR_BASE}
-RUN mkdir -p /opt/toolchains
+RUN mkdir -p /home/${user}/toolchains
 RUN mkdir -p ${APP}
 
 # Installing packages
 RUN dpkg --add-architecture i386 && \
 	apt-get -y update && \
-	apt-get -y upgrade
+	apt-get -y upgrade && \
+    apt-get -y install sudo
+
+RUN useradd -m -d /home/${user} ${user} && \
+    chown -R ${user} /home/${user} && \
+    adduser ${user} sudo && \
+    echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
+
+USER ${user}
 
 # Installing zephyr dependencias
 ## Installing default packages
-RUN apt-get install -y --no-install-recommends git ninja-build gperf \
+RUN sudo apt-get install -y --no-install-recommends git ninja-build gperf \
   ccache dfu-util wget \
   python3-pip python3-setuptools python3-tk python3-wheel xz-utils file \
   make gcc gcc-multilib g++-multilib libsdl2-dev build-essential
@@ -43,7 +53,7 @@ RUN wget -q https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}
 
 ## Installing zephyr sdk
 RUN wget -q "https://github.com/zephyrproject-rtos/sdk-ng/releases/download/v${SDK_VERSION}/zephyr-sdk-${SDK_VERSION}-setup.run" && \
-	yes | sh "zephyr-sdk-${SDK_VERSION}-setup.run" --quiet -- -d /opt/toolchains/zephyr-sdk-${SDK_VERSION} && \
+	yes | sh "zephyr-sdk-${SDK_VERSION}-setup.run" --quiet -- -d ${ZEPHYR_SDK_INSTALL_DIR} && \
 	rm "zephyr-sdk-${SDK_VERSION}-setup.run"
 
 ## Installing GCC_ARM
@@ -51,7 +61,7 @@ ARG GCC_ARM_NAME=gcc-arm-none-eabi-9-2019-q4-major
 RUN wget -q https://developer.arm.com/-/media/Files/downloads/gnu-rm/9-2019q4/RC2.1/${GCC_ARM_NAME}-x86_64-linux.tar.bz2  && \
 	tar xf ${GCC_ARM_NAME}-x86_64-linux.tar.bz2 && \
 	rm -f ${GCC_ARM_NAME}-x86_64-linux.tar.bz2 && \
-	mv ${GCC_ARM_NAME} /opt/toolchains/${GCC_ARM_NAME}
+	mv ${GCC_ARM_NAME} /home/${user}/toolchains/${GCC_ARM_NAME}
 
 # Getting zephyr and creating the environment 
 #TODO: Ponto de falha por sempre utilizar o requirements do master. Isso foi feito pois em versões antigas do zephyr os requirements estavam quebrados.
@@ -78,10 +88,6 @@ RUN dpkg -i nrf5_tools/JLink_Linux_V644e_x86_64.deb
 RUN dpkg -i nrf5_tools/nRF-Command-Line-Tools_10_2_1_Linux-amd64.deb
 
 RUN rm -rf nrf5_tools nrf5_tools.tar.gz
-
-# Creating user and access privilegies
-#RUN useradd -r -u $MY_UID -g $MY_GID appuser
-#USER appuser
 
 CMD ["/bin/bash"]
 

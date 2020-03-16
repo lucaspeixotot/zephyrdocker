@@ -8,6 +8,5 @@ services:
     container_name: zephyrApp
     volumes:
       - .:/home/appuser/workdir
-    user: $MY_UID
     stdin_open: true
     tty: true
