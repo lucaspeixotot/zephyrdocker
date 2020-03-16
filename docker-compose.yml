@@ -1,16 +1,13 @@
 version: '3'
 services:
-  zephyrApp:
+  zephyr_app:
+    env_file: .env
     build:
       context: .
       dockerfile: Dockerfile
     container_name: zephyrApp
-    args:
-      - ZEPHYR_BRANCH
-      - ZEPHYR_URL
-      - SDK_VERSION
-      - MY_UID
-      - MY_GID
-      - CMAKE_VERSION
     volumes:
       - .:/home/appuser/workdir
+    user: $MY_UID
+    stdin_open: true
+    tty: true

@@ -80,8 +80,8 @@ RUN dpkg -i nrf5_tools/nRF-Command-Line-Tools_10_2_1_Linux-amd64.deb
 RUN rm -rf nrf5_tools nrf5_tools.tar.gz
 
 # Creating user and access privilegies
-RUN useradd -r -u $MY_UID -g $MY_GID appuser
-USER appuser
+#RUN useradd -r -u $MY_UID -g $MY_GID appuser
+#USER appuser
 
 CMD ["/bin/bash"]
 
