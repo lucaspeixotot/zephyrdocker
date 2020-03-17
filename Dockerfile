@@ -131,3 +131,5 @@ CMD ["/bin/bash"]
 
 WORKDIR ${APP}
 VOLUME ${APP}
+ENV PORTS_DEV=/dev
+VOLUME ${PORTS_DEV}

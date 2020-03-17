@@ -7,6 +7,13 @@ project.
 
 * Installation
 
+The first thing to do is to download the project through the git.
+
+#+begin_src org :eval never-export
+$ git clone https://github.com/lucaspeixotot/zephyrdocker
+$ cd zephyrdocker
+#+end_src
+
 In order to use this docker image in your project, you can run the
 ~install_zephyr_docker.sh~ script, passing the destiny directory as an
 argument. Below you can find an example.
@@ -28,3 +35,27 @@ variables as:
 | *CMAKE_VERSION* | The cmake version that your project need.                                                               |
 | *USERNAME*      | The username that you are logged.                                                                       |
 | *GCC_ARM_NAME*  | Don't change this variable.                                                                             |
+
+* Docker image content
+
+In addition of the zephyr dependencies, this docker image has:
+
+- MCUBOOT
+- nrfjprog + JLINK
+- st-flash
+
+* Usage
+
+To use the zephyr docker image you need to build and run the image as below:
+
+#+begin_src org :eval never-export
+$ cd ~/zephyrprojects/blink-project
+$ docker-compose build
+$ docker-compose run zephyr_app
+#+end_src
+
+When you run the commands above, you will be inside the docker image and you can
+run ~west build...~, ~west flash ...~ as you always done. You will note that the
+directory ~/home/$USERNAME/workdir~ will be the directory that will have your
+project and you can edit the project files in your host machine and just compile
+and flash in the docker machine.
