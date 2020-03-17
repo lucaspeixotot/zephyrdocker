@@ -73,7 +73,7 @@ RUN wget -q https://developer.arm.com/-/media/Files/downloads/gnu-rm/9-2019q4/RC
 
 # Getting zephyr and creating the environment 
 #TODO: Ponto de falha por sempre utilizar o requirements do master. Isso foi feito pois em versões antigas do zephyr os requirements estavam quebrados.
-RUN git clone -b ${ZEPHYR_BRANCH} --single-branch ${ZEPHYR_URL} ${ZEPHYR_BASE}
+RUN git clone -q -b ${ZEPHYR_BRANCH} --single-branch ${ZEPHYR_URL} ${ZEPHYR_BASE}
 RUN pip3 install wheel && \
     wget -q https://raw.githubusercontent.com/zephyrproject-rtos/zephyr/master/scripts/requirements.txt && \
 	pip3 install -r requirements.txt && \
@@ -100,7 +100,7 @@ RUN rm -rf nrf5_tools nrf5_tools.tar.gz
 # Install mcuboot
 ENV MCUBOOT_FOLDER=${ZEPHYR_BASE}/../mcuboot
 WORKDIR ${ZEPHYR_BASE}/.. 
-RUN git clone https://github.com/JuulLabs-OSS/mcuboot
+RUN git clone -q https://github.com/JuulLabs-OSS/mcuboot
 
 ## Installing dependencies to use mcuboot succesfully
 RUN pip3 install cryptography
