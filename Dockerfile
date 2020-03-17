@@ -46,7 +46,7 @@ RUN sudo apt-get install -y --no-install-recommends git ninja-build gperf \
   python3-pip python3-setuptools python3-tk python3-wheel xz-utils file \
   make gcc gcc-multilib g++-multilib libsdl2-dev build-essential
 
-## Changing workspace to work
+## Changing workspace to tmp
 RUN mkdir -p ${USER_HOME}/tmp
 WORKDIR ${USER_HOME}/tmp
 
@@ -96,6 +96,36 @@ RUN sudo dpkg -i nrf5_tools/JLink_Linux_V644e_x86_64.deb
 RUN sudo dpkg -i nrf5_tools/nRF-Command-Line-Tools_10_2_1_Linux-amd64.deb
 
 RUN rm -rf nrf5_tools nrf5_tools.tar.gz
+
+# Install mcuboot
+ENV MCUBOOT_FOLDER=${ZEPHYR_BASE}/../mcuboot
+WORKDIR ${ZEPHYR_BASE}/.. 
+RUN git clone https://github.com/JuulLabs-OSS/mcuboot
+
+## Installing dependencies to use mcuboot succesfully
+RUN pip3 install cryptography
+
+# Setting locales and language
+RUN sudo apt-get install -y locales
+RUN sudo locale-gen en_US.UTF-8
+ENV LANG en_US.UTF-8
+ENV LANGUAGE en_US:en
+ENV LC_ALL en_US.UTF-8
+
+# Install vim
+RUN sudo apt-get -y install vim
+
+# Install st-flash
+WORKDIR ${USER_HOME}/tmp
+RUN sudo apt-get -y install libusb-1.0
+RUN git clone -q https://github.com/texane/stlink.git
+WORKDIR ${USER_HOME}/tmp/stlink
+RUN make
+RUN cd build/Release && sudo make install 
+ENV LD_LIBRARY_PATH=/usr/local/lib
+
+# Giving additional permissions to user
+RUN sudo usermod -a -G dialout ${user}
 
 CMD ["/bin/bash"]
 
