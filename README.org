@@ -1,0 +1,30 @@
+* Zephyrdocker
+
+This repository aims to provide a docker image to run projects for Zephyr
+RTOS. The idea is that with this image the developer can build and flash your
+code to your board without concern about the process of installation of each
+project.
+
+* Installation
+
+In order to use this docker image in your project, you can run the
+~install_zephyr_docker.sh~ script, passing the destiny directory as an
+argument. Below you can find an example.
+
+#+begin_src org :eval never-export
+$ sh install_zephyr_docker.sh ~/zephyrprojects/blink-project
+#+end_src
+
+After that the needed files will be in your project folder.
+
+* Configuration
+
+For this docker image works in your project is needed to set some ambient
+variables as:
+
+| *ZEPHYR_URL*    | The github url of your zephyr.                                                                          |
+| *ZEPHYR_BRANCH* | The zephyr branch that your project will use.                                                           |
+| *SDK_VERSION*   | The sdk version that your project will use(note that this must be compatible with your zephyr version). |
+| *CMAKE_VERSION* | The cmake version that your project need.                                                               |
+| *USERNAME*      | The username that you are logged.                                                                       |
+| *GCC_ARM_NAME*  | Don't change this variable.                                                                             |
