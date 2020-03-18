@@ -61,9 +61,9 @@ RUN wget -q https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}
 	rm -f ./cmake-${CMAKE_VERSION}-Linux-x86_64.sh
 
 ## Installing zephyr sdk
-RUN wget -q "https://github.com/zephyrproject-rtos/sdk-ng/releases/download/v${SDK_VERSION}/zephyr-sdk-${SDK_VERSION}-setup.run" && \
-	yes | sh "zephyr-sdk-${SDK_VERSION}-setup.run" --quiet -- -d ${ZEPHYR_SDK_INSTALL_DIR} && \
-	rm "zephyr-sdk-${SDK_VERSION}-setup.run"
+RUN wget -q "https://github.com/zephyrproject-rtos/sdk-ng/releases/download/v${SDK_VERSION}/zephyr-sdk-${SDK_VERSION}-setup.run"
+RUN sh "zephyr-sdk-${SDK_VERSION}-setup.run" --quiet -- -d ${ZEPHYR_SDK_INSTALL_DIR} -y
+RUN rm "zephyr-sdk-${SDK_VERSION}-setup.run"
 
 ## Installing GCC_ARM
 RUN wget -q https://developer.arm.com/-/media/Files/downloads/gnu-rm/9-2019q4/RC2.1/${GCC_ARM_NAME}-x86_64-linux.tar.bz2  && \
@@ -133,3 +133,4 @@ WORKDIR ${APP}
 VOLUME ${APP}
 ENV PORTS_DEV=/dev
 VOLUME ${PORTS_DEV}
+
