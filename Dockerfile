@@ -75,9 +75,9 @@ RUN wget -q https://developer.arm.com/-/media/Files/downloads/gnu-rm/9-2019q4/RC
 #TODO: Ponto de falha por sempre utilizar o requirements do master. Isso foi feito pois em versões antigas do zephyr os requirements estavam quebrados.
 RUN git clone -q -b ${ZEPHYR_BRANCH} --single-branch ${ZEPHYR_URL} ${ZEPHYR_BASE}
 RUN pip3 install wheel && \
-    wget -q https://raw.githubusercontent.com/zephyrproject-rtos/zephyr/master/scripts/requirements.txt && \
-	pip3 install -r requirements.txt && \
-    rm -f requirements.txt && \
+        #wget -q https://raw.githubusercontent.com/zephyrproject-rtos/zephyr/master/scripts/requirements.txt && \
+	pip3 install -r ${ZEPHYR_BASE}/scripts/requirements.txt && \
+    #rm -f requirements.txt && \
 	pip3 install sh
 RUN pip3 install --user -U west
 
@@ -133,4 +133,5 @@ WORKDIR ${APP}
 VOLUME ${APP}
 ENV PORTS_DEV=/dev
 VOLUME ${PORTS_DEV}
+
 
